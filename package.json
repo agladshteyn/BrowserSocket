@@ -1,0 +1,18 @@
+{
+  "name": "browser-socket",
+  "version": "1.0.0",
+  "description": "Implementation of UDP and TCP sockets in a web browser.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alex Gladshteyn",
+  "license": "ISC",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "chrome-dgram": "^3.0.4",
+    "once": "^1.4.0",
+    "winston": "^3.3.3",
+    "ws": "^7.3.0"
+  }
+}
