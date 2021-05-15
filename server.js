@@ -59,6 +59,9 @@ class Server extends EventEmitter {
 		this.sockets = {}
 		this.tcpServers = {}
 		this.connPool = new ConnPool(opts.connectionPool)
+		
+		this._logInfo('Number of free TCP server ports: ' + this.connPool.numAvailPorts)
+		
 		this.http = http.createServer()
         this.http.on('error', err => { this._onError(err) })
         this.http.on('listening', onListening)
@@ -358,7 +361,6 @@ class Server extends EventEmitter {
 		// Cleanup.
 		if (socket.proxy && socket.proxy.object && socket.proxy.type === TYPE_TCP_SERVER) {
 			try {
-				this._logInfo('Closing TCP server...')
 				socket.proxy.object.close()
 			}
 			catch (err) {
@@ -482,10 +484,13 @@ class Server extends EventEmitter {
 							}
 							
 							self._logInfo('Received TCP connection. Remote address: ' + conn.remoteAddress + '. Listening port: ' + port + '. Total connections: ' + proxy.connMgr.count() + '.')
-							self._sendMessage(socket, OUT_MSG_CONNECTION_RECEIVED, JSON.stringify(remoteConn))
+							self._sendMessage(socket, OUT_MSG_CONNECTION_RECEIVED, JSON.stringify(remoteConn))	
 							break
 						}
 						case 'close': {
+							 
+							self._logInfo('TCP server on port ' + port + ' was closed')
+							 
 							// Cleanup.
 							try {
 								if (self.tcpServers[port])
@@ -493,6 +498,16 @@ class Server extends EventEmitter {
 							}
 							catch (err) {}
 					
+							try {
+								socket.close()
+								self.connPool.freePort(port)
+							}
+							catch (err) {
+								self._reportError(err, socket)
+							}
+							
+							self._logInfo('Free ports remaining: ' + self.connPool.numAvailPorts)
+							
 							break
 						}
 						case 'error': {
@@ -502,7 +517,7 @@ class Server extends EventEmitter {
 					}
 				}
 				
-				self._logInfo('Creating TCP server on port ' + port + '.')
+				self._logInfo('Creating TCP server on port ' + port + '. Free ports remaining: ' + self.connPool.numAvailPorts)
 	
 				proxy.object = self._createTcpServer(socket, eventCallback)
 				self.tcpServers[port] = proxy
