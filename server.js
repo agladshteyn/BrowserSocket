@@ -361,7 +361,8 @@ class Server extends EventEmitter {
 		// Cleanup.
 		if (socket.proxy && socket.proxy.object && socket.proxy.type === TYPE_TCP_SERVER) {
 			try {
-				socket.proxy.object.close()
+				// Close the underlying TCP server.
+				this._closeTcpServer(socket)
 			}
 			catch (err) {
 				this._reportError(err, socket)
@@ -449,6 +450,14 @@ class Server extends EventEmitter {
 	_sendSuccessMessage (socket, jsonString) {
 		this._sendMessage (socket, OUT_MSG_HANDSHAKE_SUCCESS, jsonString)
 	}
+	
+	// Closes all client connections to a TCP server and then closes the TCP server itself.
+	_closeTcpServer (socket) {
+		if (socket.proxy && socket.proxy.connMgr) {
+			socket.proxy.connMgr.closeAll()
+			socket.proxy.object.close()
+		}
+	}
 
 	_createProxyObject (socket, params, type) {
 		let self = this;
@@ -482,6 +491,15 @@ class Server extends EventEmitter {
 								id: connId,
 								port: port
 							}
+							
+							// Listen to the 'close' event of the client connection. Remove the client after it's closed.
+							conn.on('close', () => {
+								try {
+									proxy.connMgr.remove(connId)
+								}
+								catch (err) {}
+								self._logInfo('Closed TCP connection. Remote address: ' + conn.remoteAddress + '. Listening port: ' + port + '. Total connections: ' + proxy.connMgr.count() + '.')
+							})
 							
 							self._logInfo('Received TCP connection. Remote address: ' + conn.remoteAddress + '. Listening port: ' + port + '. Total connections: ' + proxy.connMgr.count() + '.')
 							self._sendMessage(socket, OUT_MSG_CONNECTION_RECEIVED, JSON.stringify(remoteConn))	
