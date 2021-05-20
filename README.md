@@ -1,5 +1,5 @@
 # BrowserSocket
-There is no native support for TCP client/server or UDP sockets in a web browser when using pure JavaScript.  That functionality is only available when using node.js.  This package allows you to use standard TCP and UDP sockets in a web browser using just JavaScript (NOT node.js!)
+There is no native support for TCP client/server or UDP sockets in a web browser when using pure JavaScript.  That functionality is only available when using node.js.  This package allows you to use standard TCP and UDP sockets in a web browser using just JavaScript (WITHOUT node.js!)
 
 ## Install
 npm install browser-socket
