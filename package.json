@@ -4,15 +4,32 @@
   "description": "Implementation of UDP and TCP sockets in a web browser.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agladshteyn/BrowserSocket.git"
+  },
+  "keywords": [],
   "author": "Alex Gladshteyn",
   "license": "ISC",
+  "homepage": "https://github.com/agladshteyn/BrowserSocket",
   "dependencies": {
     "buffer": "^6.0.3",
     "chrome-dgram": "^3.0.4",
     "once": "^1.4.0",
     "winston": "^3.3.3",
     "ws": "^7.3.0"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/agladshteyn/BrowserSocket/issues"
+  },
+  "bin": {
+    "browser-socket": "cmd.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "devDependencies": {}
 }
