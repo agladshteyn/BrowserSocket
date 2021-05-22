@@ -26,7 +26,7 @@
     "url": "https://github.com/agladshteyn/BrowserSocket/issues"
   },
   "bin": {
-    "browser-socket": "cmd.js"
+    "browser-socket": "bin/cmd.js"
   },
   "directories": {
     "lib": "lib"
