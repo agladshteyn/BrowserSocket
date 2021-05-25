@@ -28,6 +28,8 @@ socket.once('close', () => { console.log('close event') })
 socket.close()
 ```
 
+![alt text](https://github.com/agladshteyn/BrowserSocket/blob/master/docs/diagram.PNG)
+
 #### UDP client example
 You can also create a UDP socket to send/receive data.  UDP socket exposes the same events as the node.js <b>dgram.Socket</b>: https://nodejs.org/api/dgram.html#dgram_class_dgram_socket.  To create a UDP socket, following code can be used:
 
@@ -70,7 +72,7 @@ server.on('created', (address) => {  // Fires when a TCP server instance has bee
 })
 ```
 
-You could then communicate with this TCP server using a BrowserSocket client instance described and shown in the example above.
+You could then communicate with this TCP server using a BrowserSocket client instance described and shown in the example above. Just like with a TCP client, TCP communication is facilitated and maintaned by the relay server (BrowserSocket server).
 
 
 ### BrowserSocket server
