@@ -76,7 +76,7 @@ You could then communicate with this TCP server using a BrowserSocket client ins
 
 
 ### BrowserSocket server
-All TCP and UDP traffic between the client and the destination endpoint is facilitated and handled by this component.  As shown in the example above, you would point your client instance to it by specifying its address in the 'relayUrl' option.  This is a node.js component.
+All TCP and UDP traffic between the client and the destination endpoint is facilitated and handled by this component.  This component's responsibilities are similar to those of a TURN server in WebRTC and acts as a data relay.  As shown in the example above, you would point your client instance to it by specifying its address in the 'relayUrl' option.  This is a node.js component.
 To create a BrowserSocket server instance:
 ```
 const Server = require('../').Server
