@@ -21,15 +21,19 @@ const IN_MSG_TCP_SERVER_LISTENING = 0x11
 const IN_MSG_HANDSHAKE_SUCCESS = 0x12
 const IN_MSG_ERROR = 0x13
 
+// TODO: make this an array that would contain multiple URLs. if one doesn't work, fallback on another one.
+const DEFAULT_RELAY_URL = 'ws://torrentdaddy.com:8001'
+
 
 class Relay extends EventEmitter {
 	constructor (options, type, eventCallback) {
 		super()
-		var self = this
+		let self = this
 		self.handshakeCompleted = false;
 		self.messageQueue = [];
 		self.protocol = '';
 		self.eventCallback = eventCallback;
+		let relayUrl;
 
 		if (!self.eventCallback)
 			throw new Error('Event callback function not supplied')
@@ -37,8 +41,10 @@ class Relay extends EventEmitter {
 		if (!options)
 			throw new Error('Options not specified')
 	
-		if (!options.relayUrl || options.relayUrl === '')
-			throw new Error('Relay URL not specified')
+		relayUrl = options.relayUrl;
+	
+		if (!relayUrl || relayUrl === '')
+			relayUrl = DEFAULT_RELAY_URL;
 		
 		if (!type || type === '')
 			throw new Error('Socket type not specified')
@@ -77,7 +83,7 @@ class Relay extends EventEmitter {
 				payload.clientId = options.clientId
 		}
 		
-		self.socket = new WebSocket(options.relayUrl);
+		self.socket = new WebSocket(relayUrl);
 		self.socket.addEventListener('open', function (event) {
 			let obj
 			if (payload)
@@ -143,14 +149,14 @@ class Relay extends EventEmitter {
 						let data = buf.slice(1, buf.length)
 						let str = Buffer.from(data).toString()
 						let remoteConn = JSON.parse(str);
-						let relayUrlParsed = util.ParseUrl(options.relayUrl)
+						let relayUrlParsed = util.ParseUrl(relayUrl)
 						let relayUrlHost = relayUrlParsed.host
 						let relayUrlPort = relayUrlParsed.port	
 						let opts = {
 							host: relayUrlHost,
 							port: remoteConn.port,
 							clientId: remoteConn.id,
-							relayUrl: options.relayUrl,
+							relayUrl: relayUrl,
 						}
 						// Object representing the remote client.
 						let client = new tcp.TcpSocket(opts, 'tcp-socket', () => {})
